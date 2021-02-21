@@ -1,5 +1,3 @@
-# Chapter2
-
 ## 1.数组中重复的数字
 
 https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/
@@ -571,7 +569,40 @@ public:
 
 https://leetcode-cn.com/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/
 
+这题剑指offer上就是直接扫描字符串判断每一部分的，虽然对这题来说效率高但我觉得没什么学习的价值，leetcode的题解用了状态机的思想，虽然在这题上效率会低一些，也更难写，但我觉得是更值得学习的思想，对于状态机来说，最复杂的就是画出状态转换图了，这里实在懒得画了毕竟只是学习下思想真要面试也不可能这么写，直接用Krahets题解里的了。
 
+![Picture1.png](https://pic.leetcode-cn.com/6f41d7e46fd0344c013980e3f46429dd7a7311bb4292783a482466a90f15747b-Picture1.png)
+
+```c++
+class Solution {
+public:
+    bool isNumber(string s) {
+        unordered_map<int,unordered_map<char,int>> FSM{
+            {0,{{' ',0},{'s',1},{'d',2},{'.',4}}},
+            {1,{{'d',2},{'.',4}}},
+            {2,{{'d',2},{'.',3},{'e',5},{' ',8}}},
+            {3,{{'d',3},{'e',5},{' ',8}}},
+            {4,{{'d',3}}},
+            {5,{{'s',6},{'d',7}}},
+            {6,{{'d',7}}},
+            {7,{{'d',7},{' ',8}}},
+            {8,{{' ',8}}}
+        };
+        int p=0;
+        char cur_state;
+        for(char c:s){
+            if(c>='0'&&c<='9')cur_state='d';
+            else if(c=='+'||c=='-')cur_state='s';
+            else if(c=='e'||c=='E')cur_state='e';
+            else if(c=='.'||c==' ')cur_state=c;
+            else cur_state='?';
+            if(FSM[p].find(cur_state)==FSM[p].end())return false;
+            p=FSM[p][cur_state];
+        }
+        return p==2||p==3||p==7||p==8;
+    }
+};
+```
 
 ## 19.调整数组顺序使奇数位于偶数前
 
